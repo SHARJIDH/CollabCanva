@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 
-if (!process.env.MONGODB_URI) {
+// Check for MongoDB URI at startup
+const MONGODB_URI = process.env.MONGODB_URI;
+if (!MONGODB_URI) {
   throw new Error('Please add your MongoDB URI to .env.local');
 }
 
@@ -12,10 +14,11 @@ export const connectToDatabase = async () => {
   }
 
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
+    await mongoose.connect(MONGODB_URI);
     isConnected = true;
     console.log('Connected to MongoDB');
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
+    throw error; // Re-throw the error to handle it in the calling function
   }
 };
